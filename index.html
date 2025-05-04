@@ -1,497 +1,580 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2D Fighting Game</title>
-    <style>
-        /* Base styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #222;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-        }
-
-        /* Platform Selection Screen */
-        #platform-selection {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #2c3e50, #1a1a2e);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .selection-container {
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 10px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            max-width: 90%;
-            width: 500px;
-        }
-
-        .selection-container h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #e63946;
-            text-shadow: 0 0 10px rgba(230, 57, 70, 0.5);
-        }
-
-        .selection-container p {
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-
-        .platform-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .platform-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            background-color: #e63946;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .platform-button svg {
-            margin-bottom: 10px;
-            width: 40px;
-            height: 40px;
-        }
-
-        .platform-button:hover {
-            background-color: #ff4d5e;
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
-        }
-
-        .info-text {
-            font-size: 0.9rem;
-            color: #ccc;
-            line-height: 1.5;
-        }
-
-        /* Game Container */
-        #game-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            height: auto;
-            display: none;
-        }
-
-        #game-canvas {
-            background-color: #444;
-            border: 4px solid #000;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            height: auto;
-            max-height: 90vh;
-            object-fit: contain;
-        }
-
-        /* Health Bars */
-        #health-bars {
-            position: absolute;
-            top: 10px;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 15px;
-            box-sizing: border-box;
-            z-index: 10;
-        }
-
-        .health-bar {
-            width: 300px;
-            height: 30px;
-            border: 3px solid #000;
-            background-color: #222;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        #player-health {
-            background-color: #ff6b6b;
-            height: 100%;
-            width: 100%;
-            transition: width 0.3s;
-        }
-
-        #enemy-health {
-            background-color: #6b88ff;
-            height: 100%;
-            width: 100%;
-            transition: width 0.3s;
-        }
-
-        /* Timer */
-        #timer {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #222;
-            color: white;
-            font-size: 24px;
-            padding: 5px 15px;
-            border: 3px solid #000;
-            border-radius: 5px;
-            z-index: 10;
-        }
-
-        /* PC Controls Info */
-        #controls-info {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            z-index: 10;
-        }
-
-        /* Mobile Controls */
-        #mobile-controls {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            display: none;
-            justify-content: space-between;
-            padding: 10px;
-            z-index: 20;
-        }
-
-        #movement-pad {
-            display: grid;
-            grid-template-rows: 1fr 1fr 1fr;
-            gap: 5px;
-        }
-
-        .middle-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-        }
-
-        .control-button {
-            width: 60px;
-            height: 60px;
-            background-color: rgba(0, 0, 0, 0.6);
-            border: 2px solid #e63946;
-            border-radius: 50%;
-            color: white;
-            font-size: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        #action-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .action-button {
-            width: 80px;
-            height: 80px;
-            background-color: rgba(0, 0, 0, 0.6);
-            border: 2px solid #e63946;
-            border-radius: 50%;
-            color: white;
-            font-size: 16px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Game Over Screen */
-        #game-over {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 20;
-        }
-
-        #game-over h2 {
-            color: white;
-            font-size: 48px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        #restart-button, #change-platform-button {
-            background-color: #e63946;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 18px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        #restart-button:hover, #change-platform-button:hover {
-            background-color: #ff4d5e;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            #game-container {
-                height: 100vh;
-                max-width: 100%;
-            }
-            
-            #game-canvas {
-                height: 100vh;
-                max-height: 100vh;
-                border: none;
-            }
-            
-            .health-bar {
-                width: 40%;
-                height: 20px;
-            }
-            
-            #timer {
-                font-size: 20px;
-                padding: 3px 10px;
-            }
-            
-            .control-button {
-                width: 50px;
-                height: 50px;
-            }
-            
-            .action-button {
-                width: 70px;
-                height: 70px;
-            }
-            
-            #game-over h2 {
-                font-size: 32px;
-            }
-        }
-
-        /* For extra small screens */
-        @media (max-width: 480px) {
-            .platform-buttons {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .selection-container h1 {
-                font-size: 2rem;
-            }
-            
-            .control-button {
-                width: 45px;
-                height: 45px;
-            }
-            
-            .action-button {
-                width: 60px;
-                height: 60px;
-            }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Aynı Ekranda Dövüş Oyunu (Gelişmiş)</title>
+  <meta name="viewport" content="width=800, user-scalable=no">
+  <style>
+    html, body {
+      background: #232323;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    #game-area {
+      margin: 30px auto 0 auto;
+      width: 800px;
+      height: 400px;
+      background: #121212;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px #0006;
+    }
+    @media (max-width: 900px) {
+      #game-area {
+        width: 100vw;
+        height: 50vw;
+        min-height: 240px;
+        min-width: 320px;
+        max-height: 90vw;
+        max-width: 100vw;
+      }
+    }
+    .healthbar-bg {
+      position: absolute;
+      width: 130px;
+      height: 20px;
+      background: #222;
+      top: 10px;
+      border-radius: 9px;
+      border: 2px solid #555;
+    }
+    .healthbar-fg {
+      position: absolute;
+      height: 16px;
+      top: 12px;
+      border-radius: 7px;
+      left: 2px;
+      transition: width .2s;
+    }
+    .player1-bar { left: 10px; background: #33ff33; }
+    .player2-bar { right: 10px; background: #ff3333; }
+    .cooldown-bar {
+      position: absolute;
+      height: 6px;
+      width: 120px;
+      background: #555a;
+      border-radius: 3px;
+      top: 33px;
+      left: 70px;
+    }
+    .cooldown-bar2 {
+      left: 650px !important;
+      background: #a33a;
+    }
+    .cooldown-inner {
+      height: 100%;
+      background: #0ff;
+      border-radius: 3px;
+      transition: width .2s;
+    }
+    #winner {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      background: #111e;
+      color: #fff;
+      font-size: 32px;
+      border-radius: 14px;
+      padding: 36px 40px;
+      z-index: 20;
+      display: none;
+      box-shadow: 0 0 48px #000b;
+    }
+    #mobile-controls { display: none; }
+    .touch-btn {
+      position: absolute;
+      z-index: 10;
+      background: #444b;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 24px;
+      padding: 18px 24px;
+      opacity: 0.88;
+      display: none;
+    }
+    @media (pointer: coarse) {
+      #mobile-controls { display: block !important; }
+      .touch-btn { display: block !important; }
+    }
+    #controls-desc {
+      color: #ccc;
+      font-size: 16px;
+      margin: 10px 0 0 0;
+    }
+    #select-screen {
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(20,20,20,0.92);
+      z-index:100;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+    }
+    #select-boxes {
+      display:flex;
+      gap:40px;
+      margin-bottom: 24px;
+    }
+    .char-box {
+      border:3px solid #555;
+      border-radius: 12px;
+      padding:14px 18px;
+      background:#232323;
+      min-width:110px;
+      cursor:pointer;
+      transition: border 0.2s, background 0.2s;
+    }
+    .char-box.selected {
+      border:3px solid #fff;
+      background: #444;
+    }
+    .bg-box {
+      border:3px solid #555;
+      border-radius: 12px;
+      padding:12px 24px;
+      background:#191919;
+      min-width:90px;
+      cursor:pointer;
+      transition: border 0.2s, background 0.2s;
+    }
+    .bg-box.selected {
+      border:3px solid #fff;
+      background: #333;
+    }
+    #rounds {
+      position: absolute;
+      left: 50%;
+      top: 10px;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 20px;
+      z-index: 10;
+      text-shadow:0 2px 8px #000c;
+    }
+    #sound {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      width: 32px;
+      height: 32px;
+      opacity: .7;
+      cursor: pointer;
+      z-index: 20;
+    }
+    #sound:hover { opacity: 1; }
+  </style>
 </head>
 <body>
-    <div id="platform-selection">
-        <div class="selection-container">
-            <h1>FIGHTING ARENA</h1>
-            <p>Choose your platform</p>
-            <div class="platform-buttons">
-                <button id="pc-button" class="platform-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-monitor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                    PC
-                </button>
-                <button id="mobile-button" class="platform-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-smartphone"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-                    Mobile
-                </button>
-            </div>
-            <p class="info-text">Controls:<br>
-               PC: WASD to move, F to attack, G for special<br>
-               Mobile: Virtual buttons for movement and attacks
-            </p>
-        </div>
+  <h1>Aynı Ekranda Dövüş Oyunu (Gelişmiş)</h1>
+  <div id="controls-desc">
+    <b>Oyuncu 1:</b> A/D (hareket), W (zıpla), Q (blok), S (özel), E (saldırı)<br>
+    <b>Oyuncu 2:</b> ←/→ (hareket), ↑ (zıpla), Sağ Ctrl (blok), ↓ (özel), Sağ Shift (saldırı)<br>
+    Mobilde: Tuşlara dokunarak oynayın.
+  </div>
+  <div id="game-area">
+    <canvas id="game-canvas" width="800" height="400"></canvas>
+    <div class="healthbar-bg player1-bar"></div>
+    <div class="healthbar-bg player2-bar"></div>
+    <div class="healthbar-fg player1-bar" id="p1-bar" style="width:120px; background:#33ff33;"></div>
+    <div class="healthbar-fg player2-bar" id="p2-bar" style="width:120px; background:#ff3333;"></div>
+    <div class="cooldown-bar" id="cd1"><div class="cooldown-inner" id="cd1-inner"></div></div>
+    <div class="cooldown-bar cooldown-bar2" id="cd2" style="left:650px;"><div class="cooldown-inner" id="cd2-inner"></div></div>
+    <div id="rounds"></div>
+    <img id="sound" src="https://cdn-icons-png.flaticon.com/512/727/727240.png" title="Sesi aç/kapat"/>
+    <div id="winner"></div>
+    <div id="mobile-controls">
+      <!-- Player 1 -->
+      <button class="touch-btn" id="btn-p1-left" style="bottom:160px; left:20px;">A</button>
+      <button class="touch-btn" id="btn-p1-right" style="bottom:160px; left:90px;">D</button>
+      <button class="touch-btn" id="btn-p1-jump" style="bottom:90px; left:20px;">W<br>Zıpla</button>
+      <button class="touch-btn" id="btn-p1-block" style="bottom:90px; left:90px;">Q<br>Blok</button>
+      <button class="touch-btn" id="btn-p1-attack" style="bottom:20px; left:20px;">E<br>Saldırı</button>
+      <button class="touch-btn" id="btn-p1-special" style="bottom:20px; left:90px;">S<br>Özel</button>
+      <!-- Player 2 -->
+      <button class="touch-btn" id="btn-p2-left" style="bottom:160px; right:90px;">←</button>
+      <button class="touch-btn" id="btn-p2-right" style="bottom:160px; right:20px;">→</button>
+      <button class="touch-btn" id="btn-p2-jump" style="bottom:90px; right:90px;">↑<br>Zıpla</button>
+      <button class="touch-btn" id="btn-p2-block" style="bottom:90px; right:20px;">Ctrl<br>Blok</button>
+      <button class="touch-btn" id="btn-p2-attack" style="bottom:20px; right:90px;">Shift<br>Saldırı</button>
+      <button class="touch-btn" id="btn-p2-special" style="bottom:20px; right:20px;">↓<br>Özel</button>
     </div>
-
-    <div id="game-container">
-        <canvas id="game-canvas" width="800" height="450"></canvas>
-        
-        <div id="health-bars">
-            <div class="health-bar">
-                <div id="player-health"></div>
-            </div>
-            <div class="health-bar">
-                <div id="enemy-health"></div>
-            </div>
+    <div id="select-screen">
+      <h2>Karakter ve Zemin Seçimi</h2>
+      <div id="select-boxes">
+        <div>
+          <div><b>Oyuncu 1</b></div>
+          <div id="chars1"></div>
         </div>
-        
-        <div id="timer">99</div>
-        
-        <div id="controls-info" class="pc-controls">
-            WASD: Move | F: Attack | G: Special
+        <div>
+          <div><b>Oyuncu 2</b></div>
+          <div id="chars2"></div>
         </div>
-        
-        <div id="mobile-controls">
-            <div id="movement-pad">
-                <button id="up-button" class="control-button">⬆️</button>
-                <div class="middle-row">
-                    <button id="left-button" class="control-button">⬅️</button>
-                    <button id="right-button" class="control-button">➡️</button>
-                </div>
-                <button id="down-button" class="control-button">⬇️</button>
-            </div>
-            <div id="action-buttons">
-                <button id="attack-button" class="action-button">Attack</button>
-                <button id="special-button" class="action-button">Special</button>
-            </div>
-        </div>
-        
-        <div id="game-over">
-            <h2 id="result-text">GAME OVER</h2>
-            <button id="restart-button">PLAY AGAIN</button>
-            <button id="change-platform-button">CHANGE PLATFORM</button>
-        </div>
+      </div>
+      <div>
+        <b>Zemin:</b>
+        <span id="bgs"></span>
+      </div>
+      <button id="startBtn" style="margin-top:18px; font-size:19px; padding:8px 24px; border-radius:10px;">Başla</button>
     </div>
+  </div>
+  <audio id="audio-hit" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12f3f3cfc2.mp3"></audio>
+  <audio id="audio-special" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12f3f3cfc2.mp3"></audio>
+  <audio id="audio-win" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12f3f3cfc2.mp3"></audio>
+  <script>
+    // Karakterler ve arka planlar
+    const CHARACTERS = [
+      {
+        name: "Shadow",
+        color: "#222",
+        special: "Shadow Dash",
+        desc: "Hızlı ninja, gölge atılımı. (Özelde ileri atılır)",
+      },
+      {
+        name: "Blaze",
+        color: "#ff4500",
+        special: "Alev Yumruğu",
+        desc: "Alevli dövüşçü, ateş yumruğu. (Özelde güçlü vuruş)",
+      },
+      {
+        name: "Chill",
+        color: "#1e81b0",
+        special: "Buz Kalkanı",
+        desc: "Savunmacı, buzla kalkan olur. (Özelde 2 sn hasar yemez)",
+      }
+    ];
+    const BACKGROUNDS = [
+      { name: "Dojo", color: "#e8e8bc" },
+      { name: "Alley", color: "#35355a" },
+      { name: "Çimenlik", color: "#7fc97f" }
+    ];
 
-    <script>
-        // Game Constants
-        const GRAVITY = 0.7;
-        const GROUND_LEVEL = 350;
-        const ATTACK_COOLDOWN = 30;
-        const ATTACK_DAMAGE = 10;
-        const SPECIAL_ATTACK_DAMAGE = 20;
-        const PLAYER_SPEED = 5;
-        const JUMP_VELOCITY = -15;
+    // Seçim ekranı
+    let p1char = 0, p2char = 1, bgIndex = 0;
+    function fillSelectScreen() {
+      let chars1 = document.getElementById("chars1");
+      let chars2 = document.getElementById("chars2");
+      chars1.innerHTML = "";
+      chars2.innerHTML = "";
+      CHARACTERS.forEach((c, i) => {
+        let d = document.createElement("div");
+        d.className = "char-box" + (i===p1char?" selected":"");
+        d.innerHTML = `<b>${c.name}</b><br><span style="font-size:12px">${c.special}</span><br><span style="font-size:11px;color:#ccc;">${c.desc}</span>`;
+        d.onclick = ()=>{ p1char=i; fillSelectScreen(); };
+        chars1.appendChild(d);
+      });
+      CHARACTERS.forEach((c, i) => {
+        let d = document.createElement("div");
+        d.className = "char-box" + (i===p2char?" selected":"");
+        d.innerHTML = `<b>${c.name}</b><br><span style="font-size:12px">${c.special}</span><br><span style="font-size:11px;color:#ccc;">${c.desc}</span>`;
+        d.onclick = ()=>{ p2char=i; fillSelectScreen(); };
+        chars2.appendChild(d);
+      });
+      let bgs = document.getElementById("bgs");
+      bgs.innerHTML = "";
+      BACKGROUNDS.forEach((b,i)=>{
+        let d = document.createElement("span");
+        d.className = "bg-box" + (i===bgIndex?" selected":"");
+        d.innerText = b.name;
+        d.onclick = ()=>{bgIndex=i; fillSelectScreen();};
+        bgs.appendChild(d);
+      });
+    }
+    fillSelectScreen();
+    document.getElementById("startBtn").onclick = ()=>{
+      document.getElementById("select-screen").style.display="none";
+      resetGame();
+      loop();
+    };
 
-        // Game State
-        let gameActive = false;
-        let timeLeft = 99;
-        let timerInterval;
-        let animationFrameId;
-        let canvas, ctx;
+    // Ses
+    let soundOn = true;
+    document.getElementById("sound").onclick = () => {
+      soundOn = !soundOn;
+      document.getElementById("sound").style.filter = soundOn ? "" : "grayscale(1)";
+    };
+    function playSound(id,vol=1) {
+      if (!soundOn) return;
+      let a = document.getElementById(id);
+      a.currentTime=0; a.volume = vol;
+      a.play();
+    }
 
-        // Control states
-        const Controls = {
-            up: false,
-            down: false,
-            left: false,
-            right: false,
-            attack: false,
-            special: false,
-            block: false
-        };
+    // Ayarlar
+    let player1 = {}, player2 = {};
+    let rounds1 = 0, rounds2 = 0, round = 1, totalRounds = 3;
+    let winner = null;
+    let keys = {}, touch = {};
+    let canvas = document.getElementById("game-canvas"),
+        ctx = canvas.getContext("2d");
 
-        // Fighter class definition
-        class Fighter {
-            constructor(x, y, width, height, color, isPlayer = false) {
-                this.x = x;
-                this.y = y;
-                this.width = width;
-                this.height = height;
-                this.color = color;
-                this.velocityX = 0;
-                this.velocityY = 0;
-                this.isJumping = false;
-                this.health = 100;
-                this.isAttacking = false;
-                this.attackCooldown = 0;
-                this.isBlocking = false;
-                this.facingRight = isPlayer;
-                this.isPlayer = isPlayer;
-                this.lastAttackTime = 0;
-                this.specialAttackReady = true;
-                this.specialAttackCooldown = 0;
-                this.attackBox = {
-                    width: 60,
-                    height: 30,
-                    offsetX: isPlayer ? 30 : -60,
-                    offsetY: 20
-                };
-                this.specialAttackBox = {
-                    width: 100,
-                    height: 40,
-                    offsetX: isPlayer ? 30 : -100,
-                    offsetY: 20
-                };
-                this.state = 'idle'; // idle, walk, jump, attack, special, block, hit, dead
-                this.animationFrame = 0;
-                this.animationTimer = 0;
-            }
+    // Mobil tuş dizini
+    function setupTouchControls() {
+      [
+        ["btn-p1-left", "p1-left"], ["btn-p1-right", "p1-right"],
+        ["btn-p1-jump", "p1-jump"], ["btn-p1-block", "p1-block"],
+        ["btn-p1-attack", "p1-attack"], ["btn-p1-special", "p1-special"],
+        ["btn-p2-left", "p2-left"], ["btn-p2-right", "p2-right"],
+        ["btn-p2-jump", "p2-jump"], ["btn-p2-block", "p2-block"],
+        ["btn-p2-attack", "p2-attack"], ["btn-p2-special", "p2-special"],
+      ].forEach(([id, key]) => {
+        let btn = document.getElementById(id);
+        if (!btn) return;
+        btn.ontouchstart = ()=>{ touch[key]=true; btn.style.background="#888b"; };
+        btn.ontouchend = ()=>{ touch[key]=false; btn.style.background=""; };
+        btn.onmousedown = ()=>{ touch[key]=true; btn.style.background="#888b"; };
+        btn.onmouseup = ()=>{ touch[key]=false; btn.style.background=""; };
+        btn.onmouseleave = ()=>{ touch[key]=false; btn.style.background=""; };
+      });
+    }
+    setupTouchControls();
 
-            update() {
-                // Gravity
-                if (this.y < GROUND_LEVEL - this.height) {
-                    this.velocityY += GRAVITY;
-                    this.isJumping = true;
-                } else {
-                    this.y = GROUND_LEVEL - this.height;
-                    this.velocityY = 0;
-                    this.isJumping = false;
-                }
+    window.onkeydown = (e) => { keys[e.code]=true; };
+    window.onkeyup = (e) => { keys[e.code]=false; };
 
-                // Movement
-                this.x += this.velocityX;
-                this.y += this.velocityY;
+    function resetGame() {
+      player1 = {
+        id: 1, name: CHARACTERS[p1char].name, char: CHARACTERS[p1char], x: 130, y: 340, vx: 0, vy: 0, onGround: true,
+        health: 100, attacking: false, specialReady: true, lastSpecial: 0, specialActive: false, flip: false, color: CHARACTERS[p1char].color, block: false, blockTime: 0, flash:0
+      };
+      player2 = {
+        id: 2, name: CHARACTERS[p2char].name, char: CHARACTERS[p2char], x: 670, y: 340, vx: 0, vy: 0, onGround: true,
+        health: 100, attacking: false, specialReady: true, lastSpecial: 0, specialActive: false, flip: true, color: CHARACTERS[p2char].color, block: false, blockTime: 0, flash:0
+      };
+      winner = null;
+      document.getElementById("p1-bar").style.width = "120px";
+      document.getElementById("p2-bar").style.width = "120px";
+      document.getElementById("winner").style.display="none";
+      document.getElementById("game-area").style.background = BACKGROUNDS[bgIndex].color;
+      round = rounds1 + rounds2 + 1;
+      updateRoundsText();
+    }
 
-                // Boundary checking
-                if (this.x < 0) this.x = 0
+    function updateCooldownBars(ts=0) {
+      let cd1 = Math.min((ts-player1.lastSpecial)/5000,1);
+      let cd2 = Math.min((ts-player2.lastSpecial)/5000,1);
+      document.getElementById("cd1-inner").style.width = (120*cd1)+"px";
+      document.getElementById("cd2-inner").style.width = (120*cd2)+"px";
+    }
+    function updateRoundsText() {
+      document.getElementById("rounds").innerHTML = 
+        `<span style="color:#33ff33">●</span>`.repeat(rounds1)+
+        `<span style="color:#fff">○</span>`.repeat(totalRounds/2-rounds1)+
+        " &nbsp; ROUND "+round+" &nbsp; "+
+        `<span style="color:#ff3333">●</span>`.repeat(rounds2)+
+        `<span style="color:#fff">○</span>`.repeat(totalRounds/2-rounds2);
+    }
+
+    function updateGame(ts=0) {
+      // --- Player1 Kontrolleri ---
+      let p1 = player1, p2 = player2;
+      p1.vx = 0;
+      let left1 = keys["KeyA"] || touch["p1-left"];
+      let right1 = keys["KeyD"] || touch["p1-right"];
+      let jump1 = keys["KeyW"] || touch["p1-jump"];
+      let block1 = keys["KeyQ"] || touch["p1-block"];
+      let attack1 = keys["KeyE"] || touch["p1-attack"];
+      let special1 = keys["KeyS"] || touch["p1-special"];
+      if (left1) p1.vx = -3;
+      else if (right1) p1.vx = 3;
+      // Zıplama
+      if (jump1 && p1.onGround) {
+        p1.vy = -9;
+        p1.onGround = false;
+      }
+      // Yerçekimi
+      p1.vy += 0.5;
+      p1.y += p1.vy;
+      if (p1.y > 340) { p1.y = 340; p1.vy = 0; p1.onGround = true;}
+      // Blok
+      if (block1 && !p1.block) {
+        p1.block = true; p1.blockTime = ts;
+      } else if (!block1 && p1.block) {
+        p1.block = false;
+      }
+      // Saldırı
+      if (attack1 && !p1.attacking) {
+        p1.attacking = true;
+        setTimeout(()=>p1.attacking=false, 250);
+        // Vuruş kontrol
+        if (Math.abs(p1.x - p2.x) < 60 && Math.abs(p1.y - p2.y) < 50) {
+          if (!p2.block && !p2.specialActive) {
+            p2.health = Math.max(0, p2.health-12);
+            p2.flash = 8;
+            playSound("audio-hit",.6);
+          } else if (p2.block) {
+            p2.flash = 4;
+            playSound("audio-hit",.3);
+          }
+        }
+      }
+      // Özel
+      if (special1 && p1.specialReady && ts - p1.lastSpecial > 5000) {
+        p1.specialReady = false;
+        p1.lastSpecial = ts;
+        playSound("audio-special",.7);
+        if (p1.char.name == "Shadow") {
+          // Dash
+          p1.x += 80;
+          p1.flash=10;
+        } else if (p1.char.name == "Blaze") {
+          // Güçlü vuruş
+          if (Math.abs(p1.x-p2.x)<90 && !p2.block && !p2.specialActive) {
+            p2.health = Math.max(0, p2.health-32);
+            p2.flash = 16;
+          }
+        } else if (p1.char.name == "Chill") {
+          // 2 sn hasar alma
+          p1.specialActive = true;
+          setTimeout(()=>p1.specialActive=false,2000);
+        }
+        setTimeout(()=>p1.specialReady=true, 3000);
+      }
+      // Kenar
+      p1.x = Math.max(40, Math.min(760, p1.x));
+      // Flash
+      if (p1.flash>0) p1.flash--;
+      // --- Player2 Kontrolleri ---
+      p2.vx = 0;
+      let left2 = keys["ArrowLeft"] || touch["p2-left"];
+      let right2 = keys["ArrowRight"] || touch["p2-right"];
+      let jump2 = keys["ArrowUp"] || touch["p2-jump"];
+      let block2 = keys["ControlRight"] || touch["p2-block"];
+      let attack2 = keys["ShiftRight"] || touch["p2-attack"];
+      let special2 = keys["ArrowDown"] || touch["p2-special"];
+      if (left2) p2.vx = -3;
+      else if (right2) p2.vx = 3;
+      // Zıplama
+      if (jump2 && p2.onGround) {
+        p2.vy = -9;
+        p2.onGround = false;
+      }
+      // Yerçekimi
+      p2.vy += 0.5;
+      p2.y += p2.vy;
+      if (p2.y > 340) { p2.y = 340; p2.vy = 0; p2.onGround = true;}
+      // Blok
+      if (block2 && !p2.block) {
+        p2.block = true; p2.blockTime = ts;
+      } else if (!block2 && p2.block) {
+        p2.block = false;
+      }
+      // Saldırı
+      if (attack2 && !p2.attacking) {
+        p2.attacking = true;
+        setTimeout(()=>p2.attacking=false, 250);
+        if (Math.abs(p1.x - p2.x) < 60 && Math.abs(p1.y - p2.y) < 50) {
+          if (!p1.block && !p1.specialActive) {
+            p1.health = Math.max(0, p1.health-12);
+            p1.flash = 8;
+            playSound("audio-hit",.6);
+          } else if (p1.block) {
+            p1.flash = 4;
+            playSound("audio-hit",.3);
+          }
+        }
+      }
+      // Özel
+      if (special2 && p2.specialReady && ts - p2.lastSpecial > 5000) {
+        p2.specialReady = false;
+        p2.lastSpecial = ts;
+        playSound("audio-special",.7);
+        if (p2.char.name == "Shadow") {
+          p2.x -= 80;
+          p2.flash=10;
+        } else if (p2.char.name == "Blaze") {
+          if (Math.abs(p1.x-p2.x)<90 && !p1.block && !p1.specialActive) {
+            p1.health = Math.max(0, p1.health-32);
+            p1.flash = 16;
+          }
+        } else if (p2.char.name == "Chill") {
+          p2.specialActive = true;
+          setTimeout(()=>p2.specialActive=false,2000);
+        }
+        setTimeout(()=>p2.specialReady=true, 3000);
+      }
+      p2.x = Math.max(40, Math.min(760, p2.x));
+      if (p2.flash>0) p2.flash--;
+      // Can barı güncelle
+      document.getElementById("p1-bar").style.width = p1.health*1.2+"px";
+      document.getElementById("p2-bar").style.width = p2.health*1.2+"px";
+      // Kazanan
+      if (!winner && (p1.health<=0 || p2.health<=0)) {
+        if (p1.health>p2.health) {rounds1++;} else {rounds2++;}
+        playSound("audio-win");
+        if (rounds1 >= totalRounds/2+1 || rounds2 >= totalRounds/2+1) {
+          winner = (p1.health>p2.health)? p1.name : p2.name;
+          showWinner(winner,true);
+        } else {
+          showWinner((p1.health>p2.health)?p1.name:p2.name,false);
+          setTimeout(()=>{resetGame();},2600);
+        }
+      }
+      updateCooldownBars(ts);
+    }
+
+    function renderGame() {
+      // Zemin
+      ctx.clearRect(0,0,800,400);
+      ctx.save();
+      ctx.fillStyle = BACKGROUNDS[bgIndex].color;
+      ctx.fillRect(0,0,800,400);
+      ctx.fillStyle = "#4e4e2b";
+      ctx.fillRect(0,360,800,40);
+      // Oyuncular
+      [player1, player2].forEach((plr, idx) => {
+        ctx.save();
+        ctx.translate(plr.x, plr.y);
+        ctx.scale(plr.flip?-1:1,1);
+        // Vücut
+        ctx.globalAlpha = plr.flash>0?.5:1;
+        ctx.fillStyle = plr.block?"#47e":"#888";
+        ctx.fillRect(-24, -85, 48, 90);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = plr.color;
+        ctx.fillRect(-20, -80, 40, 80);
+        // Kafa
+        ctx.beginPath();
+        ctx.arc(0, -100, 18, 0, 2*Math.PI);
+        ctx.fillStyle = "#eec";
+        ctx.fill();
+        // Kol (saldırı)
+        if (plr.attacking) {
+          ctx.fillStyle = plr.char.name=="Blaze"?"#f63":(plr.char.name=="Chill"?"#3af":"#333");
+          ctx.fillRect(20, -60, 30, 12);
+        }
+        // Özel aktif ise parıltı
+        if (plr.specialActive) {
+          ctx.beginPath();
+          ctx.arc(0, -100, 24, 0, 2*Math.PI);
+          ctx.strokeStyle = "#0ff";
+          ctx.lineWidth=4;
+          ctx.stroke();
+        }
+        // Özel hazır işareti
+        if (plr.specialReady && !plr.specialActive) {
+          ctx.beginPath();
+          ctx.arc(0, -120, 8, 0, 2*Math.PI);
+          ctx.fillStyle = "#0e0";
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+      // İsimler
+      ctx.font = "18px Arial";
+      ctx.fillStyle = "#111";
+      ctx.fillText(player1.name, 70, 40);
+      ctx.fillText(player2.name, 650, 40);
+      // Özel isimleri alt
+      ctx.font = "15px Arial";
+      ctx.fillText(player1.char.special, 40, 390);
+      ctx.fillText(player2.char.special, 640, 390);
+      ctx.restore();
+    }
+   
