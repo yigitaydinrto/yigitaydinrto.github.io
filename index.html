@@ -1,580 +1,76 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Aynı Ekranda Dövüş Oyunu (Gelişmiş)</title>
-  <meta name="viewport" content="width=800, user-scalable=no">
-  <style>
-    html, body {
-      background: #232323;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    #game-area {
-      margin: 30px auto 0 auto;
-      width: 800px;
-      height: 400px;
-      background: #121212;
-      border-radius: 12px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 8px 32px #0006;
-    }
-    @media (max-width: 900px) {
-      #game-area {
-        width: 100vw;
-        height: 50vw;
-        min-height: 240px;
-        min-width: 320px;
-        max-height: 90vw;
-        max-width: 100vw;
-      }
-    }
-    .healthbar-bg {
-      position: absolute;
-      width: 130px;
-      height: 20px;
-      background: #222;
-      top: 10px;
-      border-radius: 9px;
-      border: 2px solid #555;
-    }
-    .healthbar-fg {
-      position: absolute;
-      height: 16px;
-      top: 12px;
-      border-radius: 7px;
-      left: 2px;
-      transition: width .2s;
-    }
-    .player1-bar { left: 10px; background: #33ff33; }
-    .player2-bar { right: 10px; background: #ff3333; }
-    .cooldown-bar {
-      position: absolute;
-      height: 6px;
-      width: 120px;
-      background: #555a;
-      border-radius: 3px;
-      top: 33px;
-      left: 70px;
-    }
-    .cooldown-bar2 {
-      left: 650px !important;
-      background: #a33a;
-    }
-    .cooldown-inner {
-      height: 100%;
-      background: #0ff;
-      border-radius: 3px;
-      transition: width .2s;
-    }
-    #winner {
-      position: absolute;
-      left: 50%; top: 50%;
-      transform: translate(-50%,-50%);
-      background: #111e;
-      color: #fff;
-      font-size: 32px;
-      border-radius: 14px;
-      padding: 36px 40px;
-      z-index: 20;
-      display: none;
-      box-shadow: 0 0 48px #000b;
-    }
-    #mobile-controls { display: none; }
-    .touch-btn {
-      position: absolute;
-      z-index: 10;
-      background: #444b;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-size: 24px;
-      padding: 18px 24px;
-      opacity: 0.88;
-      display: none;
-    }
-    @media (pointer: coarse) {
-      #mobile-controls { display: block !important; }
-      .touch-btn { display: block !important; }
-    }
-    #controls-desc {
-      color: #ccc;
-      font-size: 16px;
-      margin: 10px 0 0 0;
-    }
-    #select-screen {
-      position:absolute;
-      top:0; left:0;
-      width:100%; height:100%;
-      background:rgba(20,20,20,0.92);
-      z-index:100;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      flex-direction:column;
-    }
-    #select-boxes {
-      display:flex;
-      gap:40px;
-      margin-bottom: 24px;
-    }
-    .char-box {
-      border:3px solid #555;
-      border-radius: 12px;
-      padding:14px 18px;
-      background:#232323;
-      min-width:110px;
-      cursor:pointer;
-      transition: border 0.2s, background 0.2s;
-    }
-    .char-box.selected {
-      border:3px solid #fff;
-      background: #444;
-    }
-    .bg-box {
-      border:3px solid #555;
-      border-radius: 12px;
-      padding:12px 24px;
-      background:#191919;
-      min-width:90px;
-      cursor:pointer;
-      transition: border 0.2s, background 0.2s;
-    }
-    .bg-box.selected {
-      border:3px solid #fff;
-      background: #333;
-    }
-    #rounds {
-      position: absolute;
-      left: 50%;
-      top: 10px;
-      transform: translateX(-50%);
-      color: #fff;
-      font-size: 20px;
-      z-index: 10;
-      text-shadow:0 2px 8px #000c;
-    }
-    #sound {
-      position: absolute;
-      right: 16px;
-      top: 16px;
-      width: 32px;
-      height: 32px;
-      opacity: .7;
-      cursor: pointer;
-      z-index: 20;
-    }
-    #sound:hover { opacity: 1; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Sayfası</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-  <h1>Aynı Ekranda Dövüş Oyunu (Gelişmiş)</h1>
-  <div id="controls-desc">
-    <b>Oyuncu 1:</b> A/D (hareket), W (zıpla), Q (blok), S (özel), E (saldırı)<br>
-    <b>Oyuncu 2:</b> ←/→ (hareket), ↑ (zıpla), Sağ Ctrl (blok), ↓ (özel), Sağ Shift (saldırı)<br>
-    Mobilde: Tuşlara dokunarak oynayın.
-  </div>
-  <div id="game-area">
-    <canvas id="game-canvas" width="800" height="400"></canvas>
-    <div class="healthbar-bg player1-bar"></div>
-    <div class="healthbar-bg player2-bar"></div>
-    <div class="healthbar-fg player1-bar" id="p1-bar" style="width:120px; background:#33ff33;"></div>
-    <div class="healthbar-fg player2-bar" id="p2-bar" style="width:120px; background:#ff3333;"></div>
-    <div class="cooldown-bar" id="cd1"><div class="cooldown-inner" id="cd1-inner"></div></div>
-    <div class="cooldown-bar cooldown-bar2" id="cd2" style="left:650px;"><div class="cooldown-inner" id="cd2-inner"></div></div>
-    <div id="rounds"></div>
-    <img id="sound" src="https://cdn-icons-png.flaticon.com/512/727/727240.png" title="Sesi aç/kapat"/>
-    <div id="winner"></div>
-    <div id="mobile-controls">
-      <!-- Player 1 -->
-      <button class="touch-btn" id="btn-p1-left" style="bottom:160px; left:20px;">A</button>
-      <button class="touch-btn" id="btn-p1-right" style="bottom:160px; left:90px;">D</button>
-      <button class="touch-btn" id="btn-p1-jump" style="bottom:90px; left:20px;">W<br>Zıpla</button>
-      <button class="touch-btn" id="btn-p1-block" style="bottom:90px; left:90px;">Q<br>Blok</button>
-      <button class="touch-btn" id="btn-p1-attack" style="bottom:20px; left:20px;">E<br>Saldırı</button>
-      <button class="touch-btn" id="btn-p1-special" style="bottom:20px; left:90px;">S<br>Özel</button>
-      <!-- Player 2 -->
-      <button class="touch-btn" id="btn-p2-left" style="bottom:160px; right:90px;">←</button>
-      <button class="touch-btn" id="btn-p2-right" style="bottom:160px; right:20px;">→</button>
-      <button class="touch-btn" id="btn-p2-jump" style="bottom:90px; right:90px;">↑<br>Zıpla</button>
-      <button class="touch-btn" id="btn-p2-block" style="bottom:90px; right:20px;">Ctrl<br>Blok</button>
-      <button class="touch-btn" id="btn-p2-attack" style="bottom:20px; right:90px;">Shift<br>Saldırı</button>
-      <button class="touch-btn" id="btn-p2-special" style="bottom:20px; right:20px;">↓<br>Özel</button>
+
+    <div class="login-container">
+        <form action="login.php" method="post">
+            <h2>Giriş Yap</h2>
+            <div class="input-group">
+                <label for="username">Kullanıcı Adı</label>
+                <input type="text" id="username" name="kullanici_adi" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Şifre</label>
+                <input type="password" id="password" name="sifre" required>
+            </div>
+            <button type="submit">Giriş</button>
+        </form>
     </div>
-    <div id="select-screen">
-      <h2>Karakter ve Zemin Seçimi</h2>
-      <div id="select-boxes">
-        <div>
-          <div><b>Oyuncu 1</b></div>
-          <div id="chars1"></div>
-        </div>
-        <div>
-          <div><b>Oyuncu 2</b></div>
-          <div id="chars2"></div>
-        </div>
-      </div>
-      <div>
-        <b>Zemin:</b>
-        <span id="bgs"></span>
-      </div>
-      <button id="startBtn" style="margin-top:18px; font-size:19px; padding:8px 24px; border-radius:10px;">Başla</button>
-    </div>
-  </div>
-  <audio id="audio-hit" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12f3f3cfc2.mp3"></audio>
-  <audio id="audio-special" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12f3f3cfc2.mp3"></audio>
-  <audio id="audio-win" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12f3f3cfc2.mp3"></audio>
-  <script>
-    // Karakterler ve arka planlar
-    const CHARACTERS = [
-      {
-        name: "Shadow",
-        color: "#222",
-        special: "Shadow Dash",
-        desc: "Hızlı ninja, gölge atılımı. (Özelde ileri atılır)",
-      },
-      {
-        name: "Blaze",
-        color: "#ff4500",
-        special: "Alev Yumruğu",
-        desc: "Alevli dövüşçü, ateş yumruğu. (Özelde güçlü vuruş)",
-      },
-      {
-        name: "Chill",
-        color: "#1e81b0",
-        special: "Buz Kalkanı",
-        desc: "Savunmacı, buzla kalkan olur. (Özelde 2 sn hasar yemez)",
-      }
-    ];
-    const BACKGROUNDS = [
-      { name: "Dojo", color: "#e8e8bc" },
-      { name: "Alley", color: "#35355a" },
-      { name: "Çimenlik", color: "#7fc97f" }
-    ];
 
-    // Seçim ekranı
-    let p1char = 0, p2char = 1, bgIndex = 0;
-    function fillSelectScreen() {
-      let chars1 = document.getElementById("chars1");
-      let chars2 = document.getElementById("chars2");
-      chars1.innerHTML = "";
-      chars2.innerHTML = "";
-      CHARACTERS.forEach((c, i) => {
-        let d = document.createElement("div");
-        d.className = "char-box" + (i===p1char?" selected":"");
-        d.innerHTML = `<b>${c.name}</b><br><span style="font-size:12px">${c.special}</span><br><span style="font-size:11px;color:#ccc;">${c.desc}</span>`;
-        d.onclick = ()=>{ p1char=i; fillSelectScreen(); };
-        chars1.appendChild(d);
-      });
-      CHARACTERS.forEach((c, i) => {
-        let d = document.createElement("div");
-        d.className = "char-box" + (i===p2char?" selected":"");
-        d.innerHTML = `<b>${c.name}</b><br><span style="font-size:12px">${c.special}</span><br><span style="font-size:11px;color:#ccc;">${c.desc}</span>`;
-        d.onclick = ()=>{ p2char=i; fillSelectScreen(); };
-        chars2.appendChild(d);
-      });
-      let bgs = document.getElementById("bgs");
-      bgs.innerHTML = "";
-      BACKGROUNDS.forEach((b,i)=>{
-        let d = document.createElement("span");
-        d.className = "bg-box" + (i===bgIndex?" selected":"");
-        d.innerText = b.name;
-        d.onclick = ()=>{bgIndex=i; fillSelectScreen();};
-        bgs.appendChild(d);
-      });
-    }
-    fillSelectScreen();
-    document.getElementById("startBtn").onclick = ()=>{
-      document.getElementById("select-screen").style.display="none";
-      resetGame();
-      loop();
-    };
-
-    // Ses
-    let soundOn = true;
-    document.getElementById("sound").onclick = () => {
-      soundOn = !soundOn;
-      document.getElementById("sound").style.filter = soundOn ? "" : "grayscale(1)";
-    };
-    function playSound(id,vol=1) {
-      if (!soundOn) return;
-      let a = document.getElementById(id);
-      a.currentTime=0; a.volume = vol;
-      a.play();
-    }
-
-    // Ayarlar
-    let player1 = {}, player2 = {};
-    let rounds1 = 0, rounds2 = 0, round = 1, totalRounds = 3;
-    let winner = null;
-    let keys = {}, touch = {};
-    let canvas = document.getElementById("game-canvas"),
-        ctx = canvas.getContext("2d");
-
-    // Mobil tuş dizini
-    function setupTouchControls() {
-      [
-        ["btn-p1-left", "p1-left"], ["btn-p1-right", "p1-right"],
-        ["btn-p1-jump", "p1-jump"], ["btn-p1-block", "p1-block"],
-        ["btn-p1-attack", "p1-attack"], ["btn-p1-special", "p1-special"],
-        ["btn-p2-left", "p2-left"], ["btn-p2-right", "p2-right"],
-        ["btn-p2-jump", "p2-jump"], ["btn-p2-block", "p2-block"],
-        ["btn-p2-attack", "p2-attack"], ["btn-p2-special", "p2-special"],
-      ].forEach(([id, key]) => {
-        let btn = document.getElementById(id);
-        if (!btn) return;
-        btn.ontouchstart = ()=>{ touch[key]=true; btn.style.background="#888b"; };
-        btn.ontouchend = ()=>{ touch[key]=false; btn.style.background=""; };
-        btn.onmousedown = ()=>{ touch[key]=true; btn.style.background="#888b"; };
-        btn.onmouseup = ()=>{ touch[key]=false; btn.style.background=""; };
-        btn.onmouseleave = ()=>{ touch[key]=false; btn.style.background=""; };
-      });
-    }
-    setupTouchControls();
-
-    window.onkeydown = (e) => { keys[e.code]=true; };
-    window.onkeyup = (e) => { keys[e.code]=false; };
-
-    function resetGame() {
-      player1 = {
-        id: 1, name: CHARACTERS[p1char].name, char: CHARACTERS[p1char], x: 130, y: 340, vx: 0, vy: 0, onGround: true,
-        health: 100, attacking: false, specialReady: true, lastSpecial: 0, specialActive: false, flip: false, color: CHARACTERS[p1char].color, block: false, blockTime: 0, flash:0
-      };
-      player2 = {
-        id: 2, name: CHARACTERS[p2char].name, char: CHARACTERS[p2char], x: 670, y: 340, vx: 0, vy: 0, onGround: true,
-        health: 100, attacking: false, specialReady: true, lastSpecial: 0, specialActive: false, flip: true, color: CHARACTERS[p2char].color, block: false, blockTime: 0, flash:0
-      };
-      winner = null;
-      document.getElementById("p1-bar").style.width = "120px";
-      document.getElementById("p2-bar").style.width = "120px";
-      document.getElementById("winner").style.display="none";
-      document.getElementById("game-area").style.background = BACKGROUNDS[bgIndex].color;
-      round = rounds1 + rounds2 + 1;
-      updateRoundsText();
-    }
-
-    function updateCooldownBars(ts=0) {
-      let cd1 = Math.min((ts-player1.lastSpecial)/5000,1);
-      let cd2 = Math.min((ts-player2.lastSpecial)/5000,1);
-      document.getElementById("cd1-inner").style.width = (120*cd1)+"px";
-      document.getElementById("cd2-inner").style.width = (120*cd2)+"px";
-    }
-    function updateRoundsText() {
-      document.getElementById("rounds").innerHTML = 
-        `<span style="color:#33ff33">●</span>`.repeat(rounds1)+
-        `<span style="color:#fff">○</span>`.repeat(totalRounds/2-rounds1)+
-        " &nbsp; ROUND "+round+" &nbsp; "+
-        `<span style="color:#ff3333">●</span>`.repeat(rounds2)+
-        `<span style="color:#fff">○</span>`.repeat(totalRounds/2-rounds2);
-    }
-
-    function updateGame(ts=0) {
-      // --- Player1 Kontrolleri ---
-      let p1 = player1, p2 = player2;
-      p1.vx = 0;
-      let left1 = keys["KeyA"] || touch["p1-left"];
-      let right1 = keys["KeyD"] || touch["p1-right"];
-      let jump1 = keys["KeyW"] || touch["p1-jump"];
-      let block1 = keys["KeyQ"] || touch["p1-block"];
-      let attack1 = keys["KeyE"] || touch["p1-attack"];
-      let special1 = keys["KeyS"] || touch["p1-special"];
-      if (left1) p1.vx = -3;
-      else if (right1) p1.vx = 3;
-      // Zıplama
-      if (jump1 && p1.onGround) {
-        p1.vy = -9;
-        p1.onGround = false;
-      }
-      // Yerçekimi
-      p1.vy += 0.5;
-      p1.y += p1.vy;
-      if (p1.y > 340) { p1.y = 340; p1.vy = 0; p1.onGround = true;}
-      // Blok
-      if (block1 && !p1.block) {
-        p1.block = true; p1.blockTime = ts;
-      } else if (!block1 && p1.block) {
-        p1.block = false;
-      }
-      // Saldırı
-      if (attack1 && !p1.attacking) {
-        p1.attacking = true;
-        setTimeout(()=>p1.attacking=false, 250);
-        // Vuruş kontrol
-        if (Math.abs(p1.x - p2.x) < 60 && Math.abs(p1.y - p2.y) < 50) {
-          if (!p2.block && !p2.specialActive) {
-            p2.health = Math.max(0, p2.health-12);
-            p2.flash = 8;
-            playSound("audio-hit",.6);
-          } else if (p2.block) {
-            p2.flash = 4;
-            playSound("audio-hit",.3);
-          }
-        }
-      }
-      // Özel
-      if (special1 && p1.specialReady && ts - p1.lastSpecial > 5000) {
-        p1.specialReady = false;
-        p1.lastSpecial = ts;
-        playSound("audio-special",.7);
-        if (p1.char.name == "Shadow") {
-          // Dash
-          p1.x += 80;
-          p1.flash=10;
-        } else if (p1.char.name == "Blaze") {
-          // Güçlü vuruş
-          if (Math.abs(p1.x-p2.x)<90 && !p2.block && !p2.specialActive) {
-            p2.health = Math.max(0, p2.health-32);
-            p2.flash = 16;
-          }
-        } else if (p1.char.name == "Chill") {
-          // 2 sn hasar alma
-          p1.specialActive = true;
-          setTimeout(()=>p1.specialActive=false,2000);
-        }
-        setTimeout(()=>p1.specialReady=true, 3000);
-      }
-      // Kenar
-      p1.x = Math.max(40, Math.min(760, p1.x));
-      // Flash
-      if (p1.flash>0) p1.flash--;
-      // --- Player2 Kontrolleri ---
-      p2.vx = 0;
-      let left2 = keys["ArrowLeft"] || touch["p2-left"];
-      let right2 = keys["ArrowRight"] || touch["p2-right"];
-      let jump2 = keys["ArrowUp"] || touch["p2-jump"];
-      let block2 = keys["ControlRight"] || touch["p2-block"];
-      let attack2 = keys["ShiftRight"] || touch["p2-attack"];
-      let special2 = keys["ArrowDown"] || touch["p2-special"];
-      if (left2) p2.vx = -3;
-      else if (right2) p2.vx = 3;
-      // Zıplama
-      if (jump2 && p2.onGround) {
-        p2.vy = -9;
-        p2.onGround = false;
-      }
-      // Yerçekimi
-      p2.vy += 0.5;
-      p2.y += p2.vy;
-      if (p2.y > 340) { p2.y = 340; p2.vy = 0; p2.onGround = true;}
-      // Blok
-      if (block2 && !p2.block) {
-        p2.block = true; p2.blockTime = ts;
-      } else if (!block2 && p2.block) {
-        p2.block = false;
-      }
-      // Saldırı
-      if (attack2 && !p2.attacking) {
-        p2.attacking = true;
-        setTimeout(()=>p2.attacking=false, 250);
-        if (Math.abs(p1.x - p2.x) < 60 && Math.abs(p1.y - p2.y) < 50) {
-          if (!p1.block && !p1.specialActive) {
-            p1.health = Math.max(0, p1.health-12);
-            p1.flash = 8;
-            playSound("audio-hit",.6);
-          } else if (p1.block) {
-            p1.flash = 4;
-            playSound("audio-hit",.3);
-          }
-        }
-      }
-      // Özel
-      if (special2 && p2.specialReady && ts - p2.lastSpecial > 5000) {
-        p2.specialReady = false;
-        p2.lastSpecial = ts;
-        playSound("audio-special",.7);
-        if (p2.char.name == "Shadow") {
-          p2.x -= 80;
-          p2.flash=10;
-        } else if (p2.char.name == "Blaze") {
-          if (Math.abs(p1.x-p2.x)<90 && !p1.block && !p1.specialActive) {
-            p1.health = Math.max(0, p1.health-32);
-            p1.flash = 16;
-          }
-        } else if (p2.char.name == "Chill") {
-          p2.specialActive = true;
-          setTimeout(()=>p2.specialActive=false,2000);
-        }
-        setTimeout(()=>p2.specialReady=true, 3000);
-      }
-      p2.x = Math.max(40, Math.min(760, p2.x));
-      if (p2.flash>0) p2.flash--;
-      // Can barı güncelle
-      document.getElementById("p1-bar").style.width = p1.health*1.2+"px";
-      document.getElementById("p2-bar").style.width = p2.health*1.2+"px";
-      // Kazanan
-      if (!winner && (p1.health<=0 || p2.health<=0)) {
-        if (p1.health>p2.health) {rounds1++;} else {rounds2++;}
-        playSound("audio-win");
-        if (rounds1 >= totalRounds/2+1 || rounds2 >= totalRounds/2+1) {
-          winner = (p1.health>p2.health)? p1.name : p2.name;
-          showWinner(winner,true);
-        } else {
-          showWinner((p1.health>p2.health)?p1.name:p2.name,false);
-          setTimeout(()=>{resetGame();},2600);
-        }
-      }
-      updateCooldownBars(ts);
-    }
-
-    function renderGame() {
-      // Zemin
-      ctx.clearRect(0,0,800,400);
-      ctx.save();
-      ctx.fillStyle = BACKGROUNDS[bgIndex].color;
-      ctx.fillRect(0,0,800,400);
-      ctx.fillStyle = "#4e4e2b";
-      ctx.fillRect(0,360,800,40);
-      // Oyuncular
-      [player1, player2].forEach((plr, idx) => {
-        ctx.save();
-        ctx.translate(plr.x, plr.y);
-        ctx.scale(plr.flip?-1:1,1);
-        // Vücut
-        ctx.globalAlpha = plr.flash>0?.5:1;
-        ctx.fillStyle = plr.block?"#47e":"#888";
-        ctx.fillRect(-24, -85, 48, 90);
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = plr.color;
-        ctx.fillRect(-20, -80, 40, 80);
-        // Kafa
-        ctx.beginPath();
-        ctx.arc(0, -100, 18, 0, 2*Math.PI);
-        ctx.fillStyle = "#eec";
-        ctx.fill();
-        // Kol (saldırı)
-        if (plr.attacking) {
-          ctx.fillStyle = plr.char.name=="Blaze"?"#f63":(plr.char.name=="Chill"?"#3af":"#333");
-          ctx.fillRect(20, -60, 30, 12);
-        }
-        // Özel aktif ise parıltı
-        if (plr.specialActive) {
-          ctx.beginPath();
-          ctx.arc(0, -100, 24, 0, 2*Math.PI);
-          ctx.strokeStyle = "#0ff";
-          ctx.lineWidth=4;
-          ctx.stroke();
-        }
-        // Özel hazır işareti
-        if (plr.specialReady && !plr.specialActive) {
-          ctx.beginPath();
-          ctx.arc(0, -120, 8, 0, 2*Math.PI);
-          ctx.fillStyle = "#0e0";
-          ctx.fill();
-        }
-        ctx.restore();
-      });
-      // İsimler
-      ctx.font = "18px Arial";
-      ctx.fillStyle = "#111";
-      ctx.fillText(player1.name, 70, 40);
-      ctx.fillText(player2.name, 650, 40);
-      // Özel isimleri alt
-      ctx.font = "15px Arial";
-      ctx.fillText(player1.char.special, 40, 390);
-      ctx.fillText(player2.char.special, 640, 390);
-      ctx.restore();
-    }
-   
+</body>
+</html>
