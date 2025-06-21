@@ -2,59 +2,38 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Matrix Yağmuru</title>
+  <title>Matrix Mesaj</title>
   <style>
     body {
       margin: 0;
-      background: black;
+      background-color: black;
+      color: #00ff00;
+      font-family: monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       overflow: hidden;
+      font-size: 24px;
+      text-align: center;
+      animation: glow 2s infinite alternate;
     }
 
-    canvas {
-      display: block;
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+      }
+      to {
+        text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+      }
     }
   </style>
 </head>
 <body>
-<canvas id="matrix"></canvas>
-
-<script>
-  const canvas = document.getElementById('matrix');
-  const ctx = canvas.getContext('2d');
-
-  // Ekran boyutunu al
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  // Kullanmak istediğin yazılar (tek tek harf gibi davranır)
-  const characters = "ILKERINYO BABAPIRO DOĞUM GUNUN KUTLU OLSUN CANIM ADOLT HTLER 1945 ANLAYAN ANLADI".split(""); // Buraya ne istiyorsan yaz!
-  const fontSize = 16;
-  const columns = Math.floor(canvas.width / fontSize);
-
-  const drops = Array(columns).fill(1);
-
-  function draw() {
-    // Saydam siyah ile ekranı "silinebilir" hale getir
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = "#0F0";
-    ctx.font = `${fontSize}px monospace`;
-
-    for (let i = 0; i < drops.length; i++) {
-      const text = characters[Math.floor(Math.random() * characters.length)];
-      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-      // Random sıfırlama (yağmurun duraksaması)
-      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
-
-      drops[i]++;
-    }
-  }
-
-  setInterval(draw, 33);
-</script>
+  <div>
+    ILKERINYO BABAPIRO<br>
+    DOĞUM GÜNÜN KUTLU OLSUN CANIM<br>
+    ADOLT HTLER 1945 ANLAYAN ANLADI 🎂
+  </div>
 </body>
 </html>
